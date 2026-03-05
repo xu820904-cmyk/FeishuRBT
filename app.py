@@ -1,32 +1,30 @@
 import os
 import logging
 from bottle import Bottle, run, default_app
+# 确保导入了你定义路由的文件
+# 如果你的 setup_routes 在另一个文件，请确保 import 它
+# from routes import setup_routes 
 
-# 1. 导入你原本的逻辑函数（假设它们在同一目录或其他文件）
-# 如果这些函数就在这个 app.py 里，请确保不要删掉它们的定义
-from config import Config
-# 如果你还有其他的 import，请加在这里
-
-# 2. 初始化日志
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# 3. 获取 Bottle 实例
 app = default_app()
 
-# 4. 执行初始化（把之前的 # 号全去掉了，让它们干活！）
+# --- 关键：把这里的 # 号全部去掉，让它们干活！ ---
 try:
-    # 这里的函数名必须和你代码里定义的一模一样
     # init_database()
     # init_static_dir()
-    # setup_routes() 
-    logger.info("飞书Dify机器人 Vercel 环境初始化完成")
+    
+    # 这一行最重要！它负责接通飞书的 /webhook 路径
+    setup_routes() 
+    
+    logger.info("飞书机器人路由已成功挂载")
 except Exception as e:
-    logger.error(f"初始化失败: {e}")
+    logger.error(f"路由挂载失败: {e}")
 
-# 5. 这里是你的健康检查，留着测通没通
-@app.get('/ping')
-def ping():
-    return "pong"
+# --- 加一个首页，防止看到 404 ---
+@app.get('/')
+def index():
+    return "<h1>机器人已上线！</h1><p>请在飞书后台配置回调地址为：/webhook</p>"
 
-# --- 关键：不要加 app.run() 或 serve() ---
+# 保持简洁，不要加 app.run

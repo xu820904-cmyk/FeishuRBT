@@ -4,7 +4,7 @@ from bottle import Bottle, request, response, default_app
 logging.basicConfig(level=logging.INFO)
 app = default_app()
 
-@app.post('/webhook')
+@app.post('/webhook/')
 def feishu_webhook():
     data = request.json
     # 1. 核心：秒回飞书的“开门挑战”，解决验证失败问题
